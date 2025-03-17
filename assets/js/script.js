@@ -119,7 +119,7 @@ for (let i = 0; i < formInputs.length; i++) {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  emailjs.init("Q56geCtl5L5uawHWV"); // Replace with your EmailJS Public Key
+  emailjs.init("CONFIG.EMAILJS_PUBLIC_KEY"); // Replace with your EmailJS Public Key
 
   document
     .getElementById("contact-form")
@@ -127,7 +127,11 @@ document.addEventListener("DOMContentLoaded", function () {
       event.preventDefault();
 
       emailjs
-        .sendForm("service_m85yc9o", "template_sly5hks", this)
+        .sendForm(
+          "CONFIG.EMAILJS_SERVICE_ID",
+          "CONFIG.EMAILJS_TEMPLATE_ID",
+          this
+        )
         .then(() => {
           alert("Message sent successfully!");
         })
