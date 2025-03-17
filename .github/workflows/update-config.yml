@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main  # Change if using a different branch
+  workflow_dispatch:
 
 jobs:
   update-config:
