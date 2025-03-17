@@ -1,0 +1,30 @@
+name: Update Config File
+
+on:
+  push:
+    branches:
+      - main  # Change to your branch if necessary
+
+jobs:
+  update-config:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Inject Secrets into Config.js
+        run: |
+          echo "const CONFIG = {" > config.js
+          echo "    EMAILJS_PUBLIC_KEY: '${{ secrets.EMAILJS_PUBLIC_KEY }}'," >> config.js
+          echo "    EMAILJS_SERVICE_ID: '${{ secrets.EMAILJS_SERVICE_ID }}'," >> config.js
+          echo "    EMAILJS_TEMPLATE_ID: '${{ secrets.EMAILJS_TEMPLATE_ID }}'" >> config.js
+          echo "};" >> config.js
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions@users.noreply.github.com"
+          git add config.js
+          git commit -m "Updated config.js with secrets" || echo "No changes to commit"
+          git push
