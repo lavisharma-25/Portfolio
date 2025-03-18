@@ -1,31 +1,28 @@
-name: Update Config File
+name: Deploy Portfolio
 
 on:
   push:
     branches:
-      - main  # Change if using a different branch
-  workflow_dispatch:
+      - main
 
 jobs:
-  update-config:
+  build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Inject Secrets into Config.js
+      - name: Create Secrets JSON
         run: |
-          echo "const CONFIG = {" > assets/js/config.js
-          echo "    EMAILJS_PUBLIC_KEY: '${{ secrets.EMAILJS_PUBLIC_KEY }}'," >> assets/js/config.js
-          echo "    EMAILJS_SERVICE_ID: '${{ secrets.EMAILJS_SERVICE_ID }}'," >> assets/js/config.js
-          echo "    EMAILJS_TEMPLATE_ID: '${{ secrets.EMAILJS_TEMPLATE_ID }}'" >> assets/js/config.js
-          echo "};" >> assets/js/config.js
+          echo '{
+            "EMAILJS_SERVICE_ID": "${{ secrets.EMAILJS_SERVICE_ID }}",
+            "EMAILJS_TEMPLATE_ID": "${{ secrets.EMAILJS_TEMPLATE_ID }}",
+            "EMAILJS_PUBLIC_KEY": "${{ secrets.EMAILJS_PUBLIC_KEY }}"
+          }' > secrets.json
 
-      - name: Commit and Push Changes
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions@users.noreply.github.com"
-          git add assets/js/config.js
-          git commit -m "Updated config.js with secrets" || echo "No changes to commit"
-          git push
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: .
